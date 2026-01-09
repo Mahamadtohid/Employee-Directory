@@ -14,7 +14,7 @@ Git (to clone the repository)
 Follow these steps to get the environment up and running:
 
 Step 1: Clone the Repository
-git clone https://github.com/Mahamadtohid/Crewzy-Employee-Directory.git
+git clone https://github.com/Mahamadtohid/Employee-Directory.git
 cd Crewzy-Employee-Directory
 
 Step 2: Build and Start the Containers
