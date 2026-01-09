@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=employees_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - employee-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d employees_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  employee-backend:
+    build: ./backend
+    container_name: employee-backend
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=employees_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - employee-network
+    
+    
+  employee-frontend:
+    build: ./frontend
+    container_name: employee-frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true 
+    depends_on:
+      - employee-backend
+    networks:
+      - employee-network
+
+volumes:
+  postgres_data:
+
+networks:
+  employee-network:
+    name: employee-network
+    driver: bridge
